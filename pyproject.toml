@@ -1,0 +1,43 @@
+[project]
+name = "nautilustrader-ikbr-bot"
+version = "0.1.0"
+description = "Simple implementation of IKBR trading bot using NautilusTrader"
+readme = "README.md"
+authors = [
+    { name = "Ezequiel Rivero", email = "ezequielmrivero@outlook.com" }
+]
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "nautilus-trader[binance,docker,ib]>=1.213.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.2",
+]
+
+[tool.ruff]
+# Exclude Jupyter notebooks and common directories
+exclude = [
+    "*.ipynb",
+    ".git",
+    ".ruff_cache",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "dist",
+]
+line-length = 88
+
+[tool.ruff.lint]
+# Select rules focused on undefined names, unused variables and imports
+ignore = ["F841"]  # Ignore unused variable warnings
+select = [
+    "F",    # pyflakes (catches undefined names, unused imports, unused variables)
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "RUF",  # ruff-specific rules
+]
+# Allow autofix for all enabled rules when using --fix with ruff as the linter
+fixable = ["ALL"]

@@ -1,0 +1,10 @@
+name: "Setup uv environment"
+description: "Installs uv for Python dependency management."
+
+runs:
+  using: composite
+  steps:
+    - name: "Install UV"
+      shell: bash
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
