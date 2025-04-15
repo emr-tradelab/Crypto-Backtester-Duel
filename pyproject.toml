@@ -8,7 +8,10 @@ authors = [
 ]
 requires-python = ">=3.11,<3.13" # For NautilusTrader 
 dependencies = [
+    "ccxt>=4.4.75",
+    "polars>=1.27.1",
     #"nautilus-trader[binance,docker,ib]>=1.213.0",
+    "python-dotenv>=1.1.0",
 ]
 
 [dependency-groups]
