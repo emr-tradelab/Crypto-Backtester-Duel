@@ -1,29 +1,29 @@
 # src/main.py
-import time
-from datetime import datetime, timedelta, timezone
 
 from config.config import CONFIG
-from data.data_pipeline import binance_direct_fetch, save_tmp_data, load_tmp_data
+from data.data_pipeline import get_historical_data
+from utils.utils import polars_to_pandas
+from backtesting import Backtest
+from strategies.backtesting_py import SmaCross_bt
+import pandas as pd
 
-def get_historical_data(download=False):
+def run_bt_sma_backtest(df_pl):
 
-    if download:
-        print("\nStarting Direct Binance download ...")
-        df_direct = binance_direct_fetch()
-        print(f"Direct Binance result: {df_direct.head()}")
-        print(f"Direct Binance result shape: {df_direct.shape}")
-        save_tmp_data(df_direct, CONFIG.DATA_TMP_PATH)
-    else:
-        print("\nLoading Direct Binance data from tmp file ...")
-        df_direct = load_tmp_data(CONFIG.DATA_TMP_PATH)
-        print(f"Direct Binance result: {df_direct.head()}")
-        print(f"Direct Binance result shape: {df_direct.shape}")
-    
-    return df_direct
+    # Convert to pandas DataFrame
+    df_pd = polars_to_pandas(df_pl)
+
+    #Create and run the backtest
+    bt = Backtest(df_pd, SmaCross_bt, cash=1_000_000, commission=.002)
+    stats = bt.run()
+    print(stats)
+
+    #plot the results
+    #bt.plot()
 
 def main():
 
     df = get_historical_data(download=False)
+    run_bt_sma_backtest(df)
 
 if __name__ == "__main__":
     main()
