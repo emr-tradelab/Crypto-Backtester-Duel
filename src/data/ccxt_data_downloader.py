@@ -1,6 +1,6 @@
 import ccxt
 import polars as pl
-from datetime import datetime
+
 
 class ccxtBinanceDataDownloader:
     def __init__(self, api_key=None, api_secret=None):
@@ -9,37 +9,25 @@ class ccxtBinanceDataDownloader:
         Keys optional for public data, but you can provide
         them if Binance imposes stricter rate limits.
         """
-        self.exchange = ccxt.binance({
-            "apiKey": api_key,
-            "secret": api_secret
-        })
+        self.exchange = ccxt.binance({"apiKey": api_key, "secret": api_secret})
 
     def fetch_ohlcv(
-        self,
-        symbol: str,
-        timeframe: str = "1h",
-        limit: int | None = None,
-        since=None
+        self, symbol: str, timeframe: str = "1h", limit: int | None = None, since=None
     ) -> pl.DataFrame:
         """
         Fetch a small chunk of OHLCV data. If you need multiple years,
         you'll iterate in batches from 'since' forward.
-        
+
         :param symbol: e.g. 'BTC/USDT'
         :param timeframe: e.g. '1m', '5m', '1h', '1d'
         :param limit: number of data points per fetch (max ~1000 for Binance)
         :param since: Millisecond timestamp to fetch from (optional)
         :return: A Polars DataFrame with columns [timestamp, open, high, low, close, volume].
         """
-        raw_data = self.exchange.fetch_ohlcv(symbol, 
-                                             timeframe=timeframe, 
-                                             limit=limit, 
-                                             since=since)
+        raw_data = self.exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit, since=since)
 
         df = pl.DataFrame(
-            raw_data,
-            schema=["timestamp", "open", "high", "low", "close", "volume"],
-            orient="row"
+            raw_data, schema=["timestamp", "open", "high", "low", "close", "volume"], orient="row"
         )
         # Convert timestamp to a readable datetime
         df = df.with_columns(
@@ -53,7 +41,7 @@ class ccxtBinanceDataDownloader:
         timeframe: str,
         start_ms: int,
         end_ms: int,
-        #limit: int | None = None
+        # limit: int | None = None
     ) -> pl.DataFrame:
         """
         Fetch historical data in multiple chunks from start to end (in ms).
@@ -63,9 +51,12 @@ class ccxtBinanceDataDownloader:
         current_since = start_ms
 
         while True:
-            chunk = self.fetch_ohlcv(symbol, timeframe, 
-                                     #limit=limit,
-                                     since=current_since)
+            chunk = self.fetch_ohlcv(
+                symbol,
+                timeframe,
+                # limit=limit,
+                since=current_since,
+            )
             if chunk.is_empty():
                 break
             all_data.append(chunk)
@@ -79,6 +70,5 @@ class ccxtBinanceDataDownloader:
 
         if not all_data:
             return pl.DataFrame()  # Return empty if no data
-        
-        return pl.concat(all_data)
 
+        return pl.concat(all_data)

@@ -1,23 +1,20 @@
 import polars as pl
 from binance.client import Client
 
+
 class BinanceDirectDownloader:
     """
-    Uses the python-binance library to fetch OHLCV data directly 
+    Uses the python-binance library to fetch OHLCV data directly
     from Binance. This can be slower or faster than CCXT depending on
     rate limits and overhead.
     """
+
     def __init__(self, api_key=None, api_secret=None):
         self.client = Client(api_key, api_secret)
 
     def fetch_ohlcv(
-        self, 
-        symbol="BTCUSDT", 
-        interval="1h", 
-        start_ms=None, 
-        end_ms=None
+        self, symbol="BTCUSDT", interval="1h", start_ms=None, end_ms=None
     ) -> pl.DataFrame:
-        
         """Fetch OHLC data for a given symbol and interval.
 
         :param symbol: e.g. 'BTCUSDT'
@@ -32,9 +29,9 @@ class BinanceDirectDownloader:
             symbol=symbol,
             interval=interval,
             start_str=None if not start_ms else start_ms,
-            end_str = None if not end_ms else end_ms
+            end_str=None if not end_ms else end_ms,
         )
-    
+
         # raw_klines returns a list of lists like:
         # [
         #   [
@@ -59,25 +56,36 @@ class BinanceDirectDownloader:
         df = pl.DataFrame(
             raw_klines,
             schema=[
-                "open_time", "open", "high", "low", "close", "volume",
-                "close_time", "quote_asset_volume", "trades", 
-                "taker_base_vol", "taker_quote_vol", "ignore"
+                "open_time",
+                "open",
+                "high",
+                "low",
+                "close",
+                "volume",
+                "close_time",
+                "quote_asset_volume",
+                "trades",
+                "taker_base_vol",
+                "taker_quote_vol",
+                "ignore",
             ],
-            orient="row"
+            orient="row",
         )
         # Convert numeric columns appropriately
-        df = df.with_columns([
-            pl.col("open_time").cast(pl.Datetime("ms")),  # Convert from ms
-            pl.col("close_time").cast(pl.Datetime("ms")),
-            pl.col("open").cast(pl.Float64),
-            pl.col("high").cast(pl.Float64),
-            pl.col("low").cast(pl.Float64),
-            pl.col("close").cast(pl.Float64),
-            pl.col("volume").cast(pl.Float64),
-            pl.col("quote_asset_volume").cast(pl.Float64),
-            pl.col("trades").cast(pl.Int64),
-            pl.col("taker_base_vol").cast(pl.Float64),
-            pl.col("taker_quote_vol").cast(pl.Float64)
-        ])
+        df = df.with_columns(
+            [
+                pl.col("open_time").cast(pl.Datetime("ms")),  # Convert from ms
+                pl.col("close_time").cast(pl.Datetime("ms")),
+                pl.col("open").cast(pl.Float64),
+                pl.col("high").cast(pl.Float64),
+                pl.col("low").cast(pl.Float64),
+                pl.col("close").cast(pl.Float64),
+                pl.col("volume").cast(pl.Float64),
+                pl.col("quote_asset_volume").cast(pl.Float64),
+                pl.col("trades").cast(pl.Int64),
+                pl.col("taker_base_vol").cast(pl.Float64),
+                pl.col("taker_quote_vol").cast(pl.Float64),
+            ]
+        )
 
         return df

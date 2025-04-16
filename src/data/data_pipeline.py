@@ -1,12 +1,14 @@
+import os
 import time
 from datetime import datetime, timedelta, timezone
+
 import polars as pl
-import pandas as pd
 
 from config.config import CONFIG
+from utils.utils import timeit
+
 from .binance_api_downloader import BinanceDirectDownloader
 from .ccxt_data_downloader import ccxtBinanceDataDownloader
-from utils.utils import timeit
 
 
 def calc_dates():
@@ -28,9 +30,9 @@ def calc_dates():
 
     return start_ms, end_ms
 
+
 @timeit
 def ccxt_fetch():
-
     start_ms, end_ms = calc_dates()
 
     ccxt_client = ccxtBinanceDataDownloader(
@@ -44,9 +46,9 @@ def ccxt_fetch():
         end_ms=end_ms,
     )
 
+
 @timeit
 def binance_direct_fetch():
-
     start_ms, end_ms = calc_dates()
 
     direct_client = BinanceDirectDownloader(
@@ -59,6 +61,7 @@ def binance_direct_fetch():
         end_ms=end_ms,
     )
 
+
 def save_tmp_data(df: pl.DataFrame, filename: str):
     """
     Save the DataFrame to a temporary file.
@@ -66,6 +69,7 @@ def save_tmp_data(df: pl.DataFrame, filename: str):
     # Save the DataFrame to a temporary file
     df.write_parquet(filename)
     print(f"Temporary data saved to {filename}")
+
 
 def load_tmp_data(filename: str) -> pl.DataFrame:
     """
@@ -76,11 +80,13 @@ def load_tmp_data(filename: str) -> pl.DataFrame:
     print(f"Temporary data loaded from {filename}")
     return df
 
-def get_historical_data(download=False):
 
+def get_historical_data(download=False):
     if download:
         print("\nStarting Direct Binance download ...")
         df_direct = binance_direct_fetch()
+
+        os.makedirs(os.path.join(CONFIG.ROOT_PATH, "data"), exist_ok=True)
         save_tmp_data(df_direct, CONFIG.DATA_TMP_PATH)
     else:
         print("\nLoading Direct Binance data from tmp file ...")

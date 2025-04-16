@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class CONFIG:
     """
     Configuration class for backtest parameters.

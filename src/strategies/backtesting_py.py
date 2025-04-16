@@ -1,7 +1,7 @@
-import pandas as pd
 from backtesting import Strategy
 from backtesting.lib import crossover
 from backtesting.test import SMA
+
 
 class SmaCross_bt(Strategy):
     """
@@ -9,6 +9,7 @@ class SmaCross_bt(Strategy):
     - If short SMA crosses above long SMA, enter a long position.
     - If short SMA crosses below long SMA, close the position.
     """
+
     n_short = 10
     n_long = 20
 
