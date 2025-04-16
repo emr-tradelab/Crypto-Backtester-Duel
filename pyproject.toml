@@ -11,6 +11,7 @@ dependencies = [
     "ccxt>=4.4.75",
     "polars>=1.27.1",
     #"nautilus-trader[binance,docker,ib]>=1.213.0",
+    "python-binance>=1.0.28",
     "python-dotenv>=1.1.0",
 ]
 
@@ -30,7 +31,7 @@ exclude = [
     "venv",
     "dist",
 ]
-line-length = 88
+line-length = 100
 
 [tool.ruff.lint]
 # Select rules focused on undefined names, unused variables and imports

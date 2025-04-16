@@ -2,7 +2,7 @@ import ccxt
 import polars as pl
 from datetime import datetime
 
-class BinanceDataDownloader:
+class ccxtBinanceDataDownloader:
     def __init__(self, api_key=None, api_secret=None):
         """
         Initialize the Binance exchange object via CCXT.
@@ -18,7 +18,7 @@ class BinanceDataDownloader:
         self,
         symbol: str,
         timeframe: str = "1h",
-        limit: int = 500,
+        limit: int | None = None,
         since=None
     ) -> pl.DataFrame:
         """
@@ -31,7 +31,11 @@ class BinanceDataDownloader:
         :param since: Millisecond timestamp to fetch from (optional)
         :return: A Polars DataFrame with columns [timestamp, open, high, low, close, volume].
         """
-        raw_data = self.exchange.fetch_ohlcv(symbol, timeframe=timeframe, limit=limit, since=since)
+        raw_data = self.exchange.fetch_ohlcv(symbol, 
+                                             timeframe=timeframe, 
+                                             limit=limit, 
+                                             since=since)
+
         df = pl.DataFrame(
             raw_data,
             schema=["timestamp", "open", "high", "low", "close", "volume"],
@@ -49,7 +53,7 @@ class BinanceDataDownloader:
         timeframe: str,
         start_ms: int,
         end_ms: int,
-        limit: int = 1000
+        #limit: int | None = None
     ) -> pl.DataFrame:
         """
         Fetch historical data in multiple chunks from start to end (in ms).
@@ -59,16 +63,19 @@ class BinanceDataDownloader:
         current_since = start_ms
 
         while True:
-            chunk = self.fetch_ohlcv(symbol, timeframe, limit=limit, since=current_since)
+            chunk = self.fetch_ohlcv(symbol, timeframe, 
+                                     #limit=limit,
+                                     since=current_since)
             if chunk.is_empty():
                 break
             all_data.append(chunk)
             # Move to the last timestamp + 1ms
             last_ts = chunk[-1, "timestamp"].timestamp()  # Polars -> Python datetime -> timestamp
             current_since = int(last_ts * 1000) + 1
-            # If we've passed end_ms or chunk was smaller than limit, we can stop.
-            if current_since > end_ms or len(chunk) < limit:
-                break
+            # # If we've passed end_ms or chunk was smaller than limit, we can stop.
+            # if limit:
+            #     if current_since > end_ms or len(chunk) < limit:
+            #         break
 
         if not all_data:
             return pl.DataFrame()  # Return empty if no data

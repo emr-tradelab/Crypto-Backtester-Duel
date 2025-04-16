@@ -11,11 +11,14 @@ This project demonstrates a Proof of Concept (PoC) for crypto backtesting using 
 - Comparative tests to highlight performance and visualization differences.
 - Clear modular structure for future scaling and Docker integration.
 
-### Roadmap
+### Data Download Approach
 
-1. Add Docker support for quick reproducible environments.
-2. Expand to additional exchanges and data sources.
-3. Integrate advanced strategies and performance reporting tools.
-4. Automate CI/CD testing and deployment pipelines.
+I tested two methods for retrieving historical OHLC data from Binance:
+1. **CCXT-based approach**  
+2. **Direct Binance API** (via [python-binance](https://github.com/sammchardy/python-binance))
 
----
+In quick comparisons over a 3-month historical range at 1-hour intervals, the direct Binance approach fetched data more than **3x faster** than CCXT (around 1.13 seconds vs. 4.33 seconds). 
+
+For **faster iteration** in repeated backtests, we will:
+- Use the **Direct Binance API** for data download.
+- Save fetched data to a **temporary Parquet file**, so we can skip re-fetching from the exchange on subsequent runs.

@@ -14,30 +14,27 @@ class BinanceDirectDownloader:
         self, 
         symbol="BTCUSDT", 
         interval="1h", 
-        limit=500, 
-        start_str=None, 
-        end_str=None
+        start_ms=None, 
+        end_ms=None
     ) -> pl.DataFrame:
-        """
-        Fetch OHLC data for a given symbol and interval.
         
+        """Fetch OHLC data for a given symbol and interval.
+
         :param symbol: e.g. 'BTCUSDT'
         :param interval: e.g. '1m', '1h', '1d' (Binance format)
-        :param limit: number of data points per request
-        :param start_str: string or timestamp (see python-binance docs)
-        :param end_str: string or timestamp
-        :return: Polars DataFrame [open_time, open, high, low, close, volume, close_time, ...].
+        :param start_ms: optional - start date timestamp in milliseconds
+        :param end_ms: optional - end date timestamp in milliseconds
+                 (default will fetch everything up to now)
+        :return: Polars DataFrame [open_time, open, high, low, close,
+             volume, close_time, ...].
         """
-        # Convert e.g. "1h" to binance-compatible "1h"
-        # (If needed, you could map intervals more explicitly.)
-        raw_klines = self.client.get_klines(
+        raw_klines = self.client.get_historical_klines(
             symbol=symbol,
             interval=interval,
-            limit=limit,
-            startTime=None if not start_str else start_str,
-            endTime=None if not end_str else end_str
+            start_str=None if not start_ms else start_ms,
+            end_str = None if not end_ms else end_ms
         )
-
+    
         # raw_klines returns a list of lists like:
         # [
         #   [
@@ -65,7 +62,8 @@ class BinanceDirectDownloader:
                 "open_time", "open", "high", "low", "close", "volume",
                 "close_time", "quote_asset_volume", "trades", 
                 "taker_base_vol", "taker_quote_vol", "ignore"
-            ]
+            ],
+            orient="row"
         )
         # Convert numeric columns appropriately
         df = df.with_columns([
