@@ -11,7 +11,11 @@ class CONFIG:
     """
     Configuration class for backtest parameters.
     """
+    # Switches
+    SIMPLE_BT_BACKTESTPY = True
+    SIMPLE_BT_NAUTILUS = False
 
+    # Data parameters
     LOOKBACK_DAYS = 365
     DATA_TIMEFRAME = "1h"
     CCXT_DATA_SYMBOL = "BTC/USDT"

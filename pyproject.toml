@@ -12,10 +12,11 @@ dependencies = [
     "ccxt>=4.4.75",
     "pandas>=2.2.3",
     "polars>=1.27.1",
-    #"nautilus-trader[binance,docker,ib]>=1.213.0",
+    "nautilus-trader>=1.213.0",
     "pyarrow>=19.0.1",
     "python-binance>=1.0.28",
     "python-dotenv>=1.1.0",
+    "emr-py @ git+https://github.com/ezemriv/EMR-Py.git@v0.2.0",
 ]
 
 [dependency-groups]

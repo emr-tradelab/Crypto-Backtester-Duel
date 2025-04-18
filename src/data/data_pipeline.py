@@ -5,10 +5,14 @@ from datetime import datetime, timedelta, timezone
 import polars as pl
 
 from config.config import CONFIG
-from utils.utils import timeit
+from emrpy.decorators import timer
 
 from .binance_api_downloader import BinanceDirectDownloader
 from .ccxt_data_downloader import ccxtBinanceDataDownloader
+
+from emrpy.logutils.logger_config import get_logger
+
+log = get_logger(__name__)
 
 
 def calc_dates():
@@ -19,11 +23,11 @@ def calc_dates():
         tuple[int, int]: A tuple containing the start and end timestamps in
             milliseconds.
     """
-    # fetch LOOKBACK_DAYS worth of data
     end_time = datetime.now(timezone.utc)
-    print(f"End time: {end_time}")
+    log.debug("End time calculated as %s", end_time)
+
     start_time = end_time - timedelta(days=CONFIG.LOOKBACK_DAYS)
-    print(f"Start time: {start_time}")
+    log.debug("Start time calculated as %s", start_time)
 
     start_ms = int(time.mktime(start_time.timetuple()) * 1000)
     end_ms = int(time.mktime(end_time.timetuple()) * 1000)
@@ -31,67 +35,77 @@ def calc_dates():
     return start_ms, end_ms
 
 
-@timeit
+@timer
 def ccxt_fetch():
+    log.info("Starting CCXT fetch for symbol %s with timeframe %s", 
+             CONFIG.CCXT_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
     start_ms, end_ms = calc_dates()
 
     ccxt_client = ccxtBinanceDataDownloader(
-        api_key=CONFIG.BINANCE_API_KEY, api_secret=CONFIG.BINANCE_API_SECRET
+        api_key=CONFIG.BINANCE_API_KEY,
+        api_secret=CONFIG.BINANCE_API_SECRET
     )
 
-    return ccxt_client.fetch_historical(
+    data = ccxt_client.fetch_historical(
         symbol=CONFIG.CCXT_DATA_SYMBOL,
         timeframe=CONFIG.DATA_TIMEFRAME,
         start_ms=start_ms,
         end_ms=end_ms,
     )
+    log.info("CCXT fetch completed: %d records", len(data))
+    return data
 
 
-@timeit
+@timer
 def binance_direct_fetch():
+    log.info("Starting direct Binance fetch for symbol %s with interval %s", 
+             CONFIG.BINANCE_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
     start_ms, end_ms = calc_dates()
 
     direct_client = BinanceDirectDownloader(
-        api_key=CONFIG.BINANCE_API_KEY, api_secret=CONFIG.BINANCE_API_SECRET
+        api_key=CONFIG.BINANCE_API_KEY,
+        api_secret=CONFIG.BINANCE_API_SECRET
     )
-    return direct_client.fetch_ohlcv(
-        symbol=CONFIG.BINANCE_DATA_SYMBOL,  # Using "BTCUSDT" vs. "BTC/USDT"
+    data = direct_client.fetch_ohlcv(
+        symbol=CONFIG.BINANCE_DATA_SYMBOL,
         interval=CONFIG.DATA_TIMEFRAME,
         start_ms=start_ms,
         end_ms=end_ms,
     )
+    log.info("Direct Binance fetch completed: %d records", len(data))
+    return data
 
 
 def save_tmp_data(df: pl.DataFrame, filename: str):
     """
     Save the DataFrame to a temporary file.
     """
-    # Save the DataFrame to a temporary file
     df.write_parquet(filename)
-    print(f"Temporary data saved to {filename}")
+    log.info("Temporary data saved to %s", filename)
 
 
 def load_tmp_data(filename: str) -> pl.DataFrame:
     """
     Load the DataFrame from a temporary file.
     """
-    # Load the DataFrame from the temporary file
     df = pl.read_parquet(filename)
-    print(f"Temporary data loaded from {filename}")
+    log.info("Temporary data loaded from %s", filename)
     return df
 
 
 def get_historical_data(download=False):
+    """Fetches or loads historical data based on the `download` flag."""
     if download:
-        print("\nStarting Direct Binance download ...")
+        log.info("Starting Direct Binance download...")
         df_direct = binance_direct_fetch()
 
         os.makedirs(os.path.join(CONFIG.ROOT_PATH, "data"), exist_ok=True)
         save_tmp_data(df_direct, CONFIG.DATA_TMP_PATH)
     else:
-        print("\nLoading Direct Binance data from tmp file ...")
+        log.info("Loading Direct Binance data from temporary file...")
         df_direct = load_tmp_data(CONFIG.DATA_TMP_PATH)
 
-    print(f"Binance result: {df_direct.head()}")
-    print(f"Binance result shape: {df_direct.shape}")
+    log.debug("Binance result head:\n%s", df_direct.head())
+    log.info("Binance data shape: %s", df_direct.shape)
+
     return df_direct
