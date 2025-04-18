@@ -1,6 +1,6 @@
 [project]
 name = "nautilustrader-ikbr-bot"
-version = "0.1.0"
+version = "1.1.0"
 description = "Simple implementation of IKBR trading bot using NautilusTrader"
 readme = "README.md"
 authors = [
