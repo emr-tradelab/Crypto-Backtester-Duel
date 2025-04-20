@@ -17,6 +17,8 @@ dependencies = [
     "python-binance>=1.0.28",
     "python-dotenv>=1.1.0",
     "emr-py @ git+https://github.com/ezemriv/EMR-Py.git@v0.2.0",
+    "ipykernel>=6.29.5",
+    "optuna>=4.3.0",
 ]
 
 [dependency-groups]
