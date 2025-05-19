@@ -1,8 +1,8 @@
 # Project Summary
 
 This project demonstrates a Proof of Concept (PoC) for crypto backtesting using two libraries:
-- [nautilustrader](https://github.com/nautechsystems/nautilus-trader): Known for high-performance, low-latency trading simulations.
-- [backtesting.py](https://github.com/kernc/backtesting.py): Offers simpler setup and built-in visualization for strategy evaluation.
+- [nautilustrader](https://nautilustrader.io): Known for high-performance, low-latency trading simulations.
+- [backtesting.py](https://kernc.github.io/backtesting.py/): Offers simpler setup and built-in visualization for strategy evaluation.
 
 ### Features
 
@@ -14,10 +14,10 @@ This project demonstrates a Proof of Concept (PoC) for crypto backtesting using 
 ### Data Download Approach
 
 I tested two methods for retrieving historical OHLC data from Binance:
-1. **CCXT-based approach**  
+1. **CCXT-based approach**
 2. **Direct Binance API** (via [python-binance](https://github.com/sammchardy/python-binance))
 
-In quick comparisons over a 3-month historical range at 1-hour intervals, the direct Binance approach fetched data more than **3x faster** than CCXT (around 1.13 seconds vs. 4.33 seconds). 
+In quick comparisons over a 3-month historical range at 1-hour intervals, the direct Binance approach fetched data more than **3x faster** than CCXT (around 1.13 seconds vs. 4.33 seconds).
 
 For **faster iteration** in repeated backtests, we will:
 - Use the **Direct Binance API** for data download.
