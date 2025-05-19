@@ -1,12 +1,14 @@
 # src/main.py
 
 import argparse
-from emrpy.logutils.logger_config import configure, get_logger
+
 from backtesting import Backtest
-from data.data_pipeline import get_historical_data
-from strategies.backtesting_py import SmaCross_bt, optimize
-from utils.utils import polars_to_pandas
-from config.config import CONFIG
+from emrpy.logutils.logger_config import configure, get_logger
+
+from src.config.config import CONFIG
+from src.data.data_pipeline import get_historical_data
+from src.strategies.backtesting_py import SmaCross_bt, optimize
+from src.utils.utils import polars_to_pandas
 
 # ────────────────────────── logger setup ────────────────────────────
 configure(name="", level="INFO", filename="nautilus_bt.log")

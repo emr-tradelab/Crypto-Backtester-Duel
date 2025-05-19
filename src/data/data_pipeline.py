@@ -3,14 +3,13 @@ import time
 from datetime import datetime, timedelta, timezone
 
 import polars as pl
-
-from config.config import CONFIG
 from emrpy.decorators import timer
+from emrpy.logutils.logger_config import get_logger
+
+from src.config.config import CONFIG
 
 from .binance_api_downloader import BinanceDirectDownloader
 from .ccxt_data_downloader import ccxtBinanceDataDownloader
-
-from emrpy.logutils.logger_config import get_logger
 
 log = get_logger(__name__)
 
@@ -37,7 +36,7 @@ def calc_dates():
 
 @timer
 def ccxt_fetch():
-    log.info("Starting CCXT fetch for symbol %s with timeframe %s", 
+    log.info("Starting CCXT fetch for symbol %s with timeframe %s",
              CONFIG.CCXT_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
     start_ms, end_ms = calc_dates()
 
@@ -58,7 +57,7 @@ def ccxt_fetch():
 
 @timer
 def binance_direct_fetch():
-    log.info("Starting direct Binance fetch for symbol %s with interval %s", 
+    log.info("Starting direct Binance fetch for symbol %s with interval %s",
              CONFIG.BINANCE_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
     start_ms, end_ms = calc_dates()
 

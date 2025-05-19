@@ -5,6 +5,7 @@ from backtesting import Backtest, Strategy
 from backtesting.lib import crossover
 from backtesting.test import SMA
 
+
 class SmaCross_bt(Strategy):
     """
     A simple SMA Cross strategy:

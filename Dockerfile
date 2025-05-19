@@ -11,6 +11,9 @@ ENV UV_COMPILE_BYTECODE=1
 # Copy from the cache instead of linking since it's a mounted volume
 ENV UV_LINK_MODE=copy
 
+# Install git (required for pip/uv to install from git+ URLs)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 # Install the project's dependencies using the lockfile and settings
 # This creates a separate layer for dependencies to optimize caching
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -31,4 +34,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 ENTRYPOINT []
 
 # Set the default command - update this to match your project's entry point
-CMD ["uv", "run", "src/main.py"]
+CMD ["uv", "run", "main.py", "--download"]
