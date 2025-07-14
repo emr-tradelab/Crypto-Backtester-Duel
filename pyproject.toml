@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Ezequiel Rivero", email = "ezequielmrivero@outlook.com" }
 ]
-requires-python = ">=3.11,<3.13" # For NautilusTrader 
+requires-python = ">=3.11,<3.13" # For NautilusTrader
 dependencies = [
     "backtesting>=0.6.4",
     "ccxt>=4.4.75",
@@ -16,9 +16,9 @@ dependencies = [
     "pyarrow>=19.0.1",
     "python-binance>=1.0.28",
     "python-dotenv>=1.1.0",
-    "emr-py @ git+https://github.com/ezemriv/EMR-Py.git@v0.2.0",
     "ipykernel>=6.29.5",
     "optuna>=4.3.0",
+    "emr-py>=0.5.0",
 ]
 
 [dependency-groups]

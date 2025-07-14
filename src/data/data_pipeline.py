@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import polars as pl
 from emrpy.decorators import timer
-from emrpy.logutils.logger_config import get_logger
+from emrpy.logging import get_logger
 
 from src.config.config import CONFIG
 

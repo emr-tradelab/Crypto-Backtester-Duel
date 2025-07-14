@@ -1,6 +1,6 @@
 # Project Summary
 
-This project demonstrates a Proof of Concept (PoC) for crypto backtesting using two libraries:
+This project demonstrates a Proof of Concept (PoC) for crypto trading strategy backtesting using two libraries:
 - [nautilustrader](https://nautilustrader.io): Known for high-performance, low-latency trading simulations.
 - [backtesting.py](https://kernc.github.io/backtesting.py/): Offers simpler setup and built-in visualization for strategy evaluation.
 

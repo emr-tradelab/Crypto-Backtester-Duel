@@ -3,6 +3,7 @@
 import os
 
 from dotenv import load_dotenv
+from emrpy import get_root_path
 
 load_dotenv()
 
@@ -25,7 +26,10 @@ class CONFIG:
     BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
 
     # Paths
-    CWD = os.path.abspath(os.path.dirname(__file__))
-    ROOT_PATH = os.path.abspath(os.path.join(CWD, "..", ".."))
+    ROOT_PATH = get_root_path()
     TMP_FILENAME = f"{BINANCE_DATA_SYMBOL}_{DATA_TIMEFRAME}_tmp_{LOOKBACK_DAYS}days.parquet"
     DATA_TMP_PATH = os.path.join(ROOT_PATH, "data", TMP_FILENAME)
+
+if __name__ == "__main__":
+
+    print(CONFIG.ROOT_PATH)

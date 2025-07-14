@@ -3,7 +3,7 @@
 import argparse
 
 from backtesting import Backtest
-from emrpy.logutils.logger_config import configure, get_logger
+from emrpy.logging import configure, get_logger
 
 from src.config.config import CONFIG
 from src.data.data_pipeline import get_historical_data

@@ -1,5 +1,7 @@
 /data/
 /logs/
+.DS_Store
+*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
