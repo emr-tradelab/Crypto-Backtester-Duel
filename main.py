@@ -5,7 +5,7 @@ import argparse
 from backtesting import Backtest
 from emrpy.logging import configure, get_logger
 
-from src.config.config import CONFIG
+from src.config import config
 from src.data.data_pipeline import get_historical_data
 from src.strategies.backtesting_py import SmaCross_bt, optimize
 from src.utils.utils import polars_to_pandas
@@ -41,7 +41,7 @@ def run_bt_simple_backtest(df_pd, optimize_trials: int) -> None:
         )
         stats = bt.run()
         print(stats)
-        bt.plot()
+        bt.plot(filename="results/plot.html", open_browser=False)
 
 
 def main(download: bool = False, optimize_trials: int = 0) -> None:
@@ -53,7 +53,7 @@ def main(download: bool = False, optimize_trials: int = 0) -> None:
         log.error("An error occurred while fetching data: %s", e)
         return
 
-    if CONFIG.SIMPLE_BT_BACKTESTPY:
+    if config.simple_bt_backtestpy:
         df_pd = polars_to_pandas(df_pl)
         run_bt_simple_backtest(df_pd, optimize_trials)
     else:

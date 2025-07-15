@@ -6,7 +6,7 @@ import polars as pl
 from emrpy.decorators import timer
 from emrpy.logging import get_logger
 
-from src.config.config import CONFIG
+from src.config import CONFIG
 
 from .binance_api_downloader import BinanceDirectDownloader
 from .ccxt_data_downloader import ccxtBinanceDataDownloader
