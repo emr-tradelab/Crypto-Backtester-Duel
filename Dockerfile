@@ -1,18 +1,13 @@
-# Use Python 3.12 base image
-FROM python:3.12-slim-bookworm
-# Copy uv binary from the official image
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# Use a Python image with uv pre-installed
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
-# Set up working directory
+# Install the project into `/app`
 WORKDIR /app
 
 # Enable bytecode compilation for better performance
 ENV UV_COMPILE_BYTECODE=1
 # Copy from the cache instead of linking since it's a mounted volume
 ENV UV_LINK_MODE=copy
-
-# Install git (required for pip/uv to install from git+ URLs)
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Install the project's dependencies using the lockfile and settings
 # This creates a separate layer for dependencies to optimize caching
@@ -23,9 +18,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
-ADD . /app
+COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv sync --locked --no-dev
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
