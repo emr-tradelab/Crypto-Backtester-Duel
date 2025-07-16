@@ -6,7 +6,7 @@ import polars as pl
 from emrpy.decorators import timer
 from emrpy.logging import get_logger
 
-from src.config import CONFIG
+from src.config import config
 
 from .binance_api_downloader import BinanceDirectDownloader
 from .ccxt_data_downloader import ccxtBinanceDataDownloader
@@ -25,7 +25,7 @@ def calc_dates():
     end_time = datetime.now(timezone.utc)
     log.debug("End time calculated as %s", end_time)
 
-    start_time = end_time - timedelta(days=CONFIG.LOOKBACK_DAYS)
+    start_time = end_time - timedelta(days=config.lookback_days)
     log.debug("Start time calculated as %s", start_time)
 
     start_ms = int(time.mktime(start_time.timetuple()) * 1000)
@@ -37,17 +37,17 @@ def calc_dates():
 @timer
 def ccxt_fetch():
     log.info("Starting CCXT fetch for symbol %s with timeframe %s",
-             CONFIG.CCXT_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
+             config.ccxt_data_symbol, config.data_timeframe)
     start_ms, end_ms = calc_dates()
 
     ccxt_client = ccxtBinanceDataDownloader(
-        api_key=CONFIG.BINANCE_API_KEY,
-        api_secret=CONFIG.BINANCE_API_SECRET
+        api_key=config.binance_api_key,
+        api_secret=config.binance_api_secret
     )
 
     data = ccxt_client.fetch_historical(
-        symbol=CONFIG.CCXT_DATA_SYMBOL,
-        timeframe=CONFIG.DATA_TIMEFRAME,
+        symbol=config.ccxt_data_symbol,
+        timeframe=config.data_timeframe,
         start_ms=start_ms,
         end_ms=end_ms,
     )
@@ -58,16 +58,16 @@ def ccxt_fetch():
 @timer
 def binance_direct_fetch():
     log.info("Starting direct Binance fetch for symbol %s with interval %s",
-             CONFIG.BINANCE_DATA_SYMBOL, CONFIG.DATA_TIMEFRAME)
+             config.binance_data_symbol, config.data_timeframe)
     start_ms, end_ms = calc_dates()
 
     direct_client = BinanceDirectDownloader(
-        api_key=CONFIG.BINANCE_API_KEY,
-        api_secret=CONFIG.BINANCE_API_SECRET
+        api_key=config.binance_api_key,
+        api_secret=config.binance_api_secret
     )
     data = direct_client.fetch_ohlcv(
-        symbol=CONFIG.BINANCE_DATA_SYMBOL,
-        interval=CONFIG.DATA_TIMEFRAME,
+        symbol=config.binance_data_symbol,
+        interval=config.data_timeframe,
         start_ms=start_ms,
         end_ms=end_ms,
     )
@@ -98,11 +98,11 @@ def get_historical_data(download=False):
         log.info("Starting Direct Binance download...")
         df_direct = binance_direct_fetch()
 
-        os.makedirs(os.path.join(CONFIG.ROOT_PATH, "data"), exist_ok=True)
-        save_tmp_data(df_direct, CONFIG.DATA_TMP_PATH)
+        os.makedirs(os.path.join(config.root_path, "data"), exist_ok=True)
+        save_tmp_data(df_direct, config.data_tmp_path)
     else:
         log.info("Loading Direct Binance data from temporary file...")
-        df_direct = load_tmp_data(CONFIG.DATA_TMP_PATH)
+        df_direct = load_tmp_data(config.data_tmp_path)
 
     log.debug("Binance result head:\n%s", df_direct.head())
     log.info("Binance data shape: %s", df_direct.shape)

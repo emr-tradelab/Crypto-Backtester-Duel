@@ -39,9 +39,8 @@ class Settings(BaseSettings):
         )
 
     @property
-    def data_tmp_path(self) -> Path:
-        return self.root_path / "data" / self.tmp_filename
-
+    def data_tmp_path(self) -> str:
+        return str(self.root_path / "data" / self.tmp_filename)
 
 # Singleton-style instantiation
 config = Settings()

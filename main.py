@@ -4,6 +4,7 @@ import argparse
 
 from backtesting import Backtest
 from emrpy.logging import configure, get_logger
+from pathlib import Path
 
 from src.config import config
 from src.data.data_pipeline import get_historical_data
@@ -33,15 +34,19 @@ def run_bt_simple_backtest(df_pd, optimize_trials: int) -> None:
     else:
         log.info("Running simple SMA cross backtest")
         bt = Backtest(
-            df_pd,
-            SmaCross_bt,
+            data=df_pd,
+            strategy=SmaCross_bt,
             cash=1_000_000,
             commission=0.002,
             exclusive_orders=True
         )
         stats = bt.run()
         print(stats)
-        bt.plot(filename="results/plot.html", open_browser=False)
+
+        # Plot and save
+        output_dir = Path("results")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        bt.plot(filename=str(output_dir / "bt-py_plot.html"), open_browser=False)
 
 
 def main(download: bool = False, optimize_trials: int = 0) -> None:
