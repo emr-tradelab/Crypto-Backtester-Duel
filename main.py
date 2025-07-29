@@ -32,7 +32,7 @@ def run_bt_simple_backtest(df_pd, optimize_trials: int) -> None:
                 t.params['n_short'], t.params['n_long']
             )
     else:
-        log.info("Running simple SMA cross backtest")
+        log.info(f"Running simple SMA cross backtest with {len(df_pd)} candles")
         bt = Backtest(
             data=df_pd,
             strategy=SmaCross_bt,

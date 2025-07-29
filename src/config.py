@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     binance_api_secret: str = Field(default="BINANCE_API_SECRET", env="BINANCE_API_SECRET")
 
     # Root path
-    root_path: Path = Field(default_factory=lambda: Path(get_root_path()))
+    root_path: Path = Field(get_root_path(__file__, 1))
 
     # Pydantic settings
     model_config = SettingsConfigDict(
