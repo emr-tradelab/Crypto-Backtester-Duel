@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     ccxt_data_symbol: str = 'BTC/USDT'
     binance_data_symbol: str = 'BTCUSDT'
 
-    # Credentials (required)
-    binance_api_key: str = Field(default="BINANCE_API_KEY", env="BINANCE_API_KEY")
-    binance_api_secret: str = Field(default="BINANCE_API_SECRET", env="BINANCE_API_SECRET")
+    # Credentials (not required for this example)
+    # binance_api_key: str = Field(default="BINANCE_API_KEY", env="BINANCE_API_KEY")
+    # binance_api_secret: str = Field(default="BINANCE_API_SECRET", env="BINANCE_API_SECRET")
 
     # Root path
     root_path: Path = Field(get_root_path(__file__, 1))

@@ -26,7 +26,6 @@ class SmaCross_bt(Strategy):
         elif crossover(self.sma_long, self.sma_short):
             self.position.close()
 
-
 def optimize(df, trials: int = 100):
     """
     Optimize n_short and n_long using an Optuna multi-objective study
