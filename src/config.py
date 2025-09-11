@@ -1,9 +1,10 @@
 # src/config/config.py
 
 from pathlib import Path
+
+from emrpy import get_root_path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from emrpy import get_root_path
 
 
 class Settings(BaseSettings):

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11, <3.13"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -374,7 +374,6 @@ dependencies = [
     { name = "backtesting" },
     { name = "ccxt" },
     { name = "emr-py" },
-    { name = "ipykernel" },
     { name = "nautilus-trader" },
     { name = "optuna" },
     { name = "pandas" },
@@ -388,6 +387,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "ipykernel" },
     { name = "ruff" },
 ]
 
@@ -396,7 +396,6 @@ requires-dist = [
     { name = "backtesting", specifier = ">=0.6.4" },
     { name = "ccxt", specifier = ">=4.4.75" },
     { name = "emr-py", specifier = ">=0.5.2" },
-    { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "nautilus-trader", specifier = ">=1.213.0" },
     { name = "optuna", specifier = ">=4.3.0" },
     { name = "pandas", specifier = ">=2.2.3" },
@@ -409,7 +408,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "ruff", specifier = ">=0.11.2" }]
+dev = [
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "ruff", specifier = ">=0.11.2" },
+]
 
 [[package]]
 name = "cryptography"
@@ -1024,49 +1026,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/39/4c/8d05de5bdc75a85b43cb814027b273fc550a40ea3d16fc48aa79126beac8/nautilus_trader-1.219.0-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:b96d202038d7fce7bf611cc435380d4384fcfa814fbc1803b324c4a5b502e3c9", size = 90388726, upload-time = "2025-07-05T15:14:23.653Z" },
     { url = "https://files.pythonhosted.org/packages/b2/88/bb08adeee7d19cf9427731c56e3ab02fc619f14c2025affd76401fa439d0/nautilus_trader-1.219.0-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:f8ecb417c7c8f850acbd6107a2cdd65c503097c62a88c3333df25564f1b5d0ba", size = 97912089, upload-time = "2025-07-05T15:15:02.181Z" },
     { url = "https://files.pythonhosted.org/packages/dc/33/69e509ac64aa5931b32121f059bec2513800118c6261c908dd81a6a1a1a7/nautilus_trader-1.219.0-cp312-cp312-win_amd64.whl", hash = "sha256:7ab12304d7c8fb5c5f20ca6afa86eea2857550856ffd1d507f92ae91313e8e20", size = 40344746, upload-time = "2025-07-05T15:15:29.483Z" },
-]
-
-[[package]]
-name = "nautilustrader-ikbr-bot"
-version = "1.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "backtesting" },
-    { name = "ccxt" },
-    { name = "emr-py" },
-    { name = "nautilus-trader" },
-    { name = "optuna" },
-    { name = "pandas" },
-    { name = "polars" },
-    { name = "pyarrow" },
-    { name = "python-binance" },
-    { name = "python-dotenv" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "ipykernel" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "backtesting", specifier = ">=0.6.4" },
-    { name = "ccxt", specifier = ">=4.4.75" },
-    { name = "emr-py", specifier = ">=0.5.2" },
-    { name = "nautilus-trader", specifier = ">=1.213.0" },
-    { name = "optuna", specifier = ">=4.3.0" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "polars", specifier = ">=1.27.1" },
-    { name = "pyarrow", specifier = ">=19.0.1" },
-    { name = "python-binance", specifier = ">=1.0.28" },
-    { name = "python-dotenv", specifier = ">=1.1.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ipykernel", specifier = ">=6.29.5" },
-    { name = "ruff", specifier = ">=0.11.2" },
 ]
 
 [[package]]

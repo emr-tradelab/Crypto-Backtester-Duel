@@ -1,10 +1,10 @@
 # src/main.py
 
 import argparse
+from pathlib import Path
 
 from backtesting import Backtest
 from emrpy.logging import configure, get_logger
-from pathlib import Path
 
 from src.config import config
 from src.data.data_pipeline import get_historical_data
