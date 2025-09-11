@@ -980,7 +980,6 @@ dependencies = [
     { name = "backtesting" },
     { name = "ccxt" },
     { name = "emr-py" },
-    { name = "ipykernel" },
     { name = "nautilus-trader" },
     { name = "optuna" },
     { name = "pandas" },
@@ -992,6 +991,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "ipykernel" },
     { name = "ruff" },
 ]
 
@@ -1000,7 +1000,6 @@ requires-dist = [
     { name = "backtesting", specifier = ">=0.6.4" },
     { name = "ccxt", specifier = ">=4.4.75" },
     { name = "emr-py", specifier = ">=0.5.2" },
-    { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "nautilus-trader", specifier = ">=1.213.0" },
     { name = "optuna", specifier = ">=4.3.0" },
     { name = "pandas", specifier = ">=2.2.3" },
@@ -1011,7 +1010,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "ruff", specifier = ">=0.11.2" }]
+dev = [
+    { name = "ipykernel", specifier = ">=6.29.5" },
+    { name = "ruff", specifier = ">=0.11.2" },
+]
 
 [[package]]
 name = "nest-asyncio"
