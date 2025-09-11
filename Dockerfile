@@ -28,5 +28,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Reset the entrypoint, don't invoke `uv`
 ENTRYPOINT []
 
-# Set the default command - update this to match your project's entry point
+# Project's entry point
 CMD ["uv", "run", "main.py", "--download"]
