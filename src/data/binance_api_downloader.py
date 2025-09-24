@@ -10,6 +10,13 @@ class BinanceDirectDownloader:
     """
 
     def __init__(self, api_key=None, api_secret=None):
+        """Create a python-binance client.
+
+        Binance exposes historical price data through public endpoints, so
+        credentials are optional. Supplying them may still be beneficial for
+        installations that have higher rate-limit needs.
+        """
+
         self.client = Client(api_key, api_secret)
 
     def fetch_ohlcv(
