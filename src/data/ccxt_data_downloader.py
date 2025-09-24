@@ -4,12 +4,21 @@ import polars as pl
 
 class ccxtBinanceDataDownloader:
     def __init__(self, api_key=None, api_secret=None):
+        """Initialize the Binance exchange object via CCXT.
+
+        Args:
+            api_key: Optional Binance API key. Public data requests do not
+                require credentials, but providing them may grant higher
+                rate limits.
+            api_secret: Optional Binance API secret to pair with the key.
         """
-        Initialize the Binance exchange object via CCXT.
-        Keys optional for public data, but you can provide
-        them if Binance imposes stricter rate limits.
-        """
-        self.exchange = ccxt.binance({"apiKey": api_key, "secret": api_secret})
+        exchange_config: dict[str, str] = {}
+        if api_key:
+            exchange_config["apiKey"] = api_key
+        if api_secret:
+            exchange_config["secret"] = api_secret
+
+        self.exchange = ccxt.binance(exchange_config)
 
     def fetch_ohlcv(
         self, symbol: str, timeframe: str = "1h", limit: int | None = None, since=None

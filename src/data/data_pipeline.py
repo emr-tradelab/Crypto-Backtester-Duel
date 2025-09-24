@@ -40,6 +40,9 @@ def ccxt_fetch():
              config.ccxt_data_symbol, config.data_timeframe)
     start_ms, end_ms = calc_dates()
 
+    if not config.binance_api_key or not config.binance_api_secret:
+        log.debug("Binance API credentials not provided; proceeding without authentication.")
+
     ccxt_client = ccxtBinanceDataDownloader(
         api_key=config.binance_api_key,
         api_secret=config.binance_api_secret
@@ -60,6 +63,9 @@ def binance_direct_fetch():
     log.info("Starting direct Binance fetch for symbol %s with interval %s",
              config.binance_data_symbol, config.data_timeframe)
     start_ms, end_ms = calc_dates()
+
+    if not config.binance_api_key or not config.binance_api_secret:
+        log.debug("Binance API credentials not provided; proceeding without authentication.")
 
     direct_client = BinanceDirectDownloader(
         api_key=config.binance_api_key,

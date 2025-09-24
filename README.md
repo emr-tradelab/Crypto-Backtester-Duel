@@ -6,7 +6,7 @@ This project demonstrates a Proof of Concept (PoC) for crypto trading strategy b
 
 ### Features
 
-- **Binance API** integration for historical data retrieval.
+- **Binance API** integration for historical data retrieval (API keys optional for the sample scripts).
 - A **simple PoC trading strategy** to showcase both frameworks.
 - Comparative tests to highlight performance and visualization differences.
 - Clear modular structure for future scaling and Docker integration.
@@ -22,3 +22,6 @@ In quick comparisons over a 3-month historical range at 1-hour intervals, the di
 For **faster iteration** in repeated backtests, we will:
 - Use the **Direct Binance API** for data download.
 - Save fetched data to a **temporary Parquet file**, so we can skip re-fetching from the exchange on subsequent runs.
+
+> **Note:** All historical market-data endpoints used in this project are public. Binance API keys can still be supplied via the
+> `BINANCE_API_KEY` and `BINANCE_API_SECRET` environment variables (or a `.env` file) if you have them, but they are optional.
