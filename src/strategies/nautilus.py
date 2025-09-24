@@ -94,7 +94,7 @@ class SmaCrossNT(Strategy):
             time_in_force=TimeInForce.IOC,
         )
         self.submit_order(order)
-        
+
 
     # ──────────────────────────────────────────────────────────────
     # Teardown
