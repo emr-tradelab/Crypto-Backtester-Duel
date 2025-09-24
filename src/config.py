@@ -3,7 +3,11 @@
 from pathlib import Path
 from typing import Optional
 
-from emrpy import get_root_path
+# Compute project root relative to this file so imports don't depend on the
+# current working directory (fixes notebooks importing src.* from a different
+# CWD and getting wrong temp/data paths).
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,8 +27,9 @@ class Settings(BaseSettings):
     binance_api_key: Optional[str] = Field(default=None, env="BINANCE_API_KEY")
     binance_api_secret: Optional[str] = Field(default=None, env="BINANCE_API_SECRET")
 
-    # Root path
-    root_path: Path = Field(get_root_path(0))
+    # Root path (file-relative to avoid depending on CWD when imported from
+    # notebooks or other working directories)
+    root_path: Path = Field(_PROJECT_ROOT)
 
     # Pydantic settings
     model_config = SettingsConfigDict(
