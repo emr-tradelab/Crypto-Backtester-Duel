@@ -1,0 +1,24 @@
+.
+├── AGENTS.md
+├── LICENSE
+├── main.py
+├── notebooks
+│   ├── 01_backtesting-py_simple.ipynb
+│   ├── 02_nautilus_simple_low-level.ipynb
+│   ├── 03_nautilus_simple_high-level.ipynb
+│   └── notebook_insights.md
+├── pyproject.toml
+├── README.md
+├── results
+├── src
+│   ├── __init__.py
+│   ├── config.py
+│   ├── strategies
+│   │   ├── backtesting_py.py
+│   │   └── nautilus.py
+│   └── utils
+│       └── utils.py
+├── tree.txt
+└── uv.lock
+
+6 directories, 16 files

@@ -47,7 +47,6 @@ class Settings(BaseSettings):
 # Singleton-style instantiation
 config = Settings()
 
-
 if __name__ == "__main__":
     # quick smoke-test
     print("Root path:", config.root_path)
