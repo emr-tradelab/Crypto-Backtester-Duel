@@ -65,7 +65,7 @@ def binance_direct_fetch():
     start_ms, end_ms = calc_dates()
 
     if not config.binance_api_key or not config.binance_api_secret:
-        log.debug("Binance API credentials not provided; proceeding without authentication.")
+        log.info("Binance API credentials not provided; proceeding without authentication.")
 
     direct_client = BinanceDirectDownloader(
         api_key=config.binance_api_key,
