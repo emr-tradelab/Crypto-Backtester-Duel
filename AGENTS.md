@@ -19,21 +19,40 @@ Target: modular code pipeline, callable via `main.py`, that runs the full workfl
 ---
 
 ## Setup & Environment
+From the **uv docs**: installing via prebuilt binary is the fastest way.
 
-- Install dependencies with [uv](https://github.com/astral-sh/uv):  
-```bash
+Add this to your **AGENTS.md** env setup:
+
+---
+
+## Environment Setup with uv
+
+* **Install `uv`:**
+
+  * Using prebuilt binary (recommended):
+
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+
+    This downloads a standalone binary into `~/.local/bin/uv` (make sure it’s on `$PATH`).
+  * Alternatively, install via **pip** (slower, larger footprint):
+
+    ```bash
+    pip install uv
+    ```
+
+* **Create environment and install deps:**
+
+  ```bash
   uv sync
-```
+  source .venv/bin/activate
+  ```
 
-- Activate environment:
-```bash
-source .venv/bin/activate
-```
-
-- If needed, download BTC data with:
-```bash
-python main.py --download
-```
+* **If needed, download BTC data with:**
+    ```bash
+    python main.py --download
+    ```
 
 ---
 
