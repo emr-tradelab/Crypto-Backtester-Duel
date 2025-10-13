@@ -64,6 +64,13 @@ def main(download: bool = False, optimize_trials: int = 0) -> None:
     else:
         log.info("Simple backtest is disabled in config.")
 
+    # NautilusTrader backtest
+    # if __name__ == "__main__": Liked this way of running node
+    # try:
+    #     node.run()
+    # finally:
+    #     node.dispose()
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Backtesting frameworks comparison")
     parser.add_argument(

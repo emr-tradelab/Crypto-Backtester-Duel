@@ -4,13 +4,15 @@ from decimal import Decimal
 
 from nautilus_trader.common.enums import LogColor
 from nautilus_trader.config import PositiveInt, StrategyConfig
-from nautilus_trader.indicators.average.sma import SimpleMovingAverage
+from nautilus_trader.indicators.averages import SimpleMovingAverage
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.enums import OrderSide, TimeInForce
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.instruments import Instrument
 from nautilus_trader.model.orders import MarketOrder
 from nautilus_trader.trading.strategy import Strategy
+
+import pandas as pd
 
 
 class SmaCrossConfig(StrategyConfig, frozen=True):
@@ -52,7 +54,10 @@ class SmaCrossNT(Strategy):
 
         # Datos históricos para que las SMAs arranquen calientes
         if self.config.request_historical_bars:
-            self.request_bars(self.config.bar_type)#, lookback_bars=self.config.slow_sma_period)
+            self.request_bars(
+                self.config.bar_type,
+                start=self._clock.utc_now() - pd.Timedelta(hours=1),
+            )
 
         # Suscribirse a barras en vivo
         self.subscribe_bars(self.config.bar_type)
