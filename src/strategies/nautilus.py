@@ -4,13 +4,20 @@ from decimal import Decimal
 
 from nautilus_trader.common.enums import LogColor
 from nautilus_trader.config import PositiveInt, StrategyConfig
-from nautilus_trader.indicators.average.sma import SimpleMovingAverage
+from nautilus_trader.indicators.averages import SimpleMovingAverage
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.enums import OrderSide, TimeInForce
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.instruments import Instrument
 from nautilus_trader.model.orders import MarketOrder
 from nautilus_trader.trading.strategy import Strategy
+
+import pandas as pd
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 
 class SmaCrossConfig(StrategyConfig, frozen=True):
@@ -32,7 +39,7 @@ class SmaCrossNT(Strategy):
 
         super().__init__(config)
 
-        self.instrument: Instrument | None = None
+        self.instrument: Instrument
         self.sma_fast = SimpleMovingAverage(config.fast_sma_period)
         self.sma_slow = SimpleMovingAverage(config.slow_sma_period)
 
@@ -52,14 +59,19 @@ class SmaCrossNT(Strategy):
 
         # Datos históricos para que las SMAs arranquen calientes
         if self.config.request_historical_bars:
-            self.request_bars(self.config.bar_type)#, lookback_bars=self.config.slow_sma_period)
+            self.request_bars(
+                self.config.bar_type,
+                start=self._clock.utc_now() - pd.Timedelta(hours=1),
+            )
 
         # Suscribirse a barras en vivo
         self.subscribe_bars(self.config.bar_type)
+        logger.info("Started strategy for instrument %s bar_type=%s", self.config.instrument_id, self.config.bar_type)
 
     def on_bar(self, bar: Bar) -> None:
 
-        self.log.info(repr(bar), LogColor.CYAN)
+        # Log incoming bar at debug level to avoid noisy output in normal runs
+        logger.debug("Received bar: %s", repr(bar))
 
         # Check if indicators ready
         if not self.indicators_initialized():
@@ -78,9 +90,11 @@ class SmaCrossNT(Strategy):
 
         # Entry
         if fast >= slow and self.portfolio.is_flat(self.config.instrument_id):
+            logger.info("Entry signal: fast=%s slow=%s - submitting buy market order", fast, slow)
             self._buy_market()
         # Exit
         elif fast < slow and self.portfolio.is_net_long(self.config.instrument_id):
+            logger.info("Exit signal: fast=%s slow=%s - closing positions", fast, slow)
             self.close_all_positions(self.config.instrument_id)
 
     # ──────────────────────────────────────────────────────────────
@@ -94,6 +108,7 @@ class SmaCrossNT(Strategy):
             time_in_force=TimeInForce.IOC,
         )
         self.submit_order(order)
+        logger.info("Submitted market buy order: instrument=%s qty=%s", self.config.instrument_id, self.config.trade_size)
 
 
     # ──────────────────────────────────────────────────────────────
@@ -104,6 +119,7 @@ class SmaCrossNT(Strategy):
         if self.config.close_positions_on_stop:
             self.close_all_positions(self.config.instrument_id)
         self.unsubscribe_bars(self.config.bar_type)
+        logger.info("Stopped strategy for instrument %s", self.config.instrument_id)
 
     def on_reset(self) -> None:
         self.sma_fast.reset()

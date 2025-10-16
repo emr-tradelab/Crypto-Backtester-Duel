@@ -14,8 +14,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # Switches
-    simple_bt_backtestpy: bool = True
-    simple_bt_nautilus: bool = False
+    simple_bt_backtestpy: bool = False
+    simple_bt_nautilus: bool = True
 
     # Data parameters
     lookback_days: int = 365

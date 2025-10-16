@@ -1,94 +1,57 @@
 # AGENTS.md
 
-## Project Purpose
+## Scope and Goals of this codebase/project
 
-This project compares two Python backtesting frameworks:  
-- **backtesting.py**  
-- **nautilustrader**
+* Python project to compare two backtesting frameworks:
+  * **backtesting.py**
+  * **nautilustrader**
+* Run identical simple strategies on both.
+* Measure performance, output parity, and runtime.
+* If results diverge, document root causes and justify differences.
+* Data: BTCUSDT 1h bars. Primary source via Binance (CCXT was tested but slower).
+* Workflow final target (invoked from `main.py`):
 
-Goal: run identical strategies on both, compare results, and analyze performance.  
-Expectation: nautilustrader should run faster while yielding equivalent results. If results diverge, document and justify why.  
+  1. Load or download data
+  2. Run backtests on both frameworks
+  3. Produce comparisons: strategy metrics, runtime, cpu use, etc.
 
-Data source: BTC price data from Binance API.  
-Current state: exploratory Jupyter notebooks for backtesting, data download is already modular.
-Target: modular code pipeline, callable via `main.py`, that runs the full workflow:  
-1. Download data  
-2. Run backtests on both frameworks  
-3. Compare results  
+Dependencies are managed with **uv**. See `pyproject.toml` for versions.
 
----
+## Coding Standards
 
-## Setup & Environment
-From the **uv docs**: installing via prebuilt binary is the fastest way.
+### Language and typing
 
-Add this to your **AGENTS.md** env setup:
+* Python ≥ version in `.python-version`.
+* Full **type hints**. No `Any` unless unavoidable.
+* Strict mypy/pyright settings recommended. Treat warnings as errors.
 
----
+### Docstrings and comments
 
-## Environment Setup with uv
+* **Google style docstrings** for all public modules, classes, functions: Include `Args`, `Returns`, `Raises`, and `Examples` when relevant.
+* Document non-obvious complexity with brief inline comments, not prose.
 
-* **Install `uv`:**
+### Structure and imports
 
-  * Using prebuilt binary (recommended):
+* Keep framework-specific code isolated under `src/strategies/`.
+* Shared utilities in `src/utils/`. No framework imports inside utils.
+* Absolute imports within `src`. Avoid circular deps.
 
-    ```bash
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    ```
+### Data and time
 
-    This downloads a standalone binary into `~/.local/bin/uv` (make sure it’s on `$PATH`).
-  * Alternatively, install via **pip** (slower, larger footprint):
+* Mandatory Polars for dataframe handling.
+  * Docs: Polars evolves quickly — always consult the latest Polars documentation for complex operations.
+* All timestamps in **UTC**. Validate timezone on load.
+* Enforce schema for OHLCV: `timestamp, open, high, low, close, volume`.
 
-    ```bash
-    pip install uv
-    ```
+### Determinism and randomness
 
-* **Create environment and install deps:**
+* Fix random seeds for any stochastic component.
 
-  ```bash
-  uv sync
-  source .venv/bin/activate
-  ```
+### Linting and formatting
 
-* **If needed, download BTC data with:**
-    ```bash
-    python main.py --download
-    ```
+* **Ruff** for lint + format. Target PEP8 plus:
 
----
-
-## Development Workflow
-
-### Pre-commit checks
-- Run Ruff before committing:  
-```bash
-ruff check .
-ruff format .
-````
-
----
-
-## Git / PR Workflow
-
-* Branch naming:
-
-  * `feature/<short-description>`
-  * `bugfix/<short-description>`
-
-* Before pushing code:
-
-  * `ruff check .`
-  * `ruff format .`
-
-* PR requirements:
-
-  * Clean lint, format, and type checks
-  * Description explaining purpose of changes
-  * Minimal diff, no unnecessary changes
-
----
-
-## Notes for Agents
-
-* Ensure deterministic results: fix random seeds where applicable.
-* Use UTC consistently for all timestamps.
-* Document runtime differences between frameworks along with result differences.
+  * Max line length 100.
+  * F-strings preferred. No string `.format`.
+  * No wildcard imports.
+* Keep notebooks free of heavy logic. Move logic to `src/` and import.
