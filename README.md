@@ -4,6 +4,10 @@ This project demonstrates a Proof of Concept (PoC) for crypto trading strategy b
 - [nautilustrader](https://nautilustrader.io): Known for high-performance, low-latency trading simulations.
 - [backtesting.py](https://kernc.github.io/backtesting.py/): Offers simpler setup and built-in visualization for strategy evaluation.
 
+### Conclusions
+
+The two frameworks were in the end run for comparison with a simple dummy strategy (30/100 slow/fast SMA) and—despite the strategies being essentially the same—produced markedly different results. The leading hypothesis is that differences in order sizing (minimum trade size / lot rounding), execution and commission/fee modelling between backtesting.py and NautilusTrader account for most of the divergence. A detailed root-cause analysis is outside the scope of this repository and will be pursued in future investigations.
+
 ### Features
 
 - **Binance API** integration for historical data retrieval (API keys optional for the sample scripts).
