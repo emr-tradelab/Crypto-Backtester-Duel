@@ -26,3 +26,13 @@ def polars_to_pandas(df_pl: pl.DataFrame) -> pd.DataFrame:
         df_pd.set_index("timestamp", inplace=True)
 
     return df_pd
+
+class NautilusBackTestOutput:
+    def __init__(self, account_report: pl.DataFrame,
+                 orders_report: pl.DataFrame,
+                 positions_report: pl.DataFrame):
+        self.account_report = account_report
+        self.orders_report = orders_report
+        self.positions_report = positions_report
+
+    

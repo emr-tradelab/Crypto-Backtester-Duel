@@ -1,53 +1,16 @@
 # src/main.py
 
 import argparse
-from pathlib import Path
-
-from backtesting import Backtest
 from emrpy.logging import configure, get_logger
 
 from src.config import config
 from src.data.data_pipeline import get_historical_data
-from src.strategies.backtesting_py import SmaCross_bt, optimize
 from src.utils.utils import polars_to_pandas
 
 # ────────────────────────── logger setup ────────────────────────────
-configure(name="", level="INFO", filename="nautilus_bt.log")
+configure(name="", level="INFO", filename="crypto-bt-duel.log")
 log = get_logger(__name__)
 # ────────────────────────────────────────────────────────────────────
-
-def run_bt_simple_backtest(df_pd, optimize_trials: int) -> None:
-    """
-    Run either an Optuna optimization or a simple SMA cross backtest
-    based on optimize_trials.
-    """
-    if optimize_trials > 0:
-        log.info("Running SMA cross optimization: %d trials", optimize_trials)
-        study = optimize(df_pd, trials=optimize_trials)
-        log.info("Optimization completed; Pareto-optimal trials: %d", len(study.best_trials))
-        for t in study.best_trials:
-            log.info(
-                "Trial #%d: Return=%.2f%%, Sharpe=%.2f, n_short=%d, n_long=%d",
-                t.number, t.values[0], t.values[1],
-                t.params['n_short'], t.params['n_long']
-            )
-    else:
-        log.info(f"Running simple SMA cross backtest with {len(df_pd)} candles")
-        bt = Backtest(
-            data=df_pd,
-            strategy=SmaCross_bt,
-            cash=1_000_000,
-            commission=0.002,
-            exclusive_orders=True
-        )
-        stats = bt.run()
-        print(stats)
-
-        # Plot and save
-        output_dir = Path("results")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        bt.plot(filename=str(output_dir / "bt-py_plot.html"), open_browser=False)
-
 
 def main(download: bool = False, optimize_trials: int = 0) -> None:
     # Fetch historical data
@@ -58,18 +21,31 @@ def main(download: bool = False, optimize_trials: int = 0) -> None:
         log.error("An error occurred while fetching data: %s", e)
         return
 
+    # backtesting.py backtest
     if config.simple_bt_backtestpy:
+        from src.runners.backtesting_py import run_bt_simple_backtest
+
         df_pd = polars_to_pandas(df_pl)
         run_bt_simple_backtest(df_pd, optimize_trials)
     else:
         log.info("Simple backtest is disabled in config.")
 
     # NautilusTrader backtest
-    # if __name__ == "__main__": Liked this way of running node
-    # try:
-    #     node.run()
-    # finally:
-    #     node.dispose()
+    if config.simple_bt_nautilus:
+        from src.runners.nautilus_node import run_nautilus_simple_backtest
+        from nautilus_trader.persistence.catalog import ParquetDataCatalog
+        from pathlib import Path
+
+        CATALOG_PATH = Path.cwd() / "catalog"
+        CATALOG_PATH.mkdir(parents=True, exist_ok=True)
+
+        results, engine = run_nautilus_simple_backtest(
+            df=df_pl,
+            catalog_path=CATALOG_PATH,
+            include_ema_example=True,
+            include_local_sma=False, # This is my manual simplified long-only SMA strategy
+        )
+        print(results)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Backtesting frameworks comparison")
